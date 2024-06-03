@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 定义源数据
+        let person = {
+            name: 'hhy',
+            sex: '男',
+        }
+        // 定义代理对象
+        // 利用Proxy进行代理操作
+        const p = new Proxy(person, {
+            // get
+            get(target, properName) {
+                // 当读代理对象的某个属性时候进行检测
+                console.log(`p身上的${properName}属性被读取了，需要去调用渲染函数更新界面`);
+                // return target[properName]
+                // 优化
+                return Reflect.get(target, properName)
+            },
+            // set
+            set(target, properName, value) {
+                // 当代理对象的某个属性被更改的时候调用该函数
+                console.log(`p身上的${properName}属性被更改了或者添加了一个属性，需要去调用渲染函数更新界面`);
+                // target[properName] = value
+                Reflect.set(target, properName, value)
+            },
+           deleteProperty(target, properName) {
+            // 给代理对象删除某个属性的时候调用
+            console.log(`p当中的${properName}被删除了，需要去调用渲染函数更新界面`);
+            // return delete target[properName]
+            return Reflect.deleteProperty(target, properName)
+           }
+        })
+        // 通过检测对象的增删改查调用相关函数，进行页面更新
+        console.log(p.name);
+        // console.log(p);
+        p.age = 18
+        console.log(p);
+        delete p.name
+        console.log(p);
+    </script>
+</body>
+</html>
